@@ -1,0 +1,3 @@
+Sat Sep 27 17:51:05 2014
+
+HSaliency ../../../DATA/SBT/TRAIN/4/subset1\*.jpg ../../../salmaps/TRAIN/HSal/4/ 

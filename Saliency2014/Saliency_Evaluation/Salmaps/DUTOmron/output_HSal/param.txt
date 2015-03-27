@@ -1,0 +1,3 @@
+Fri Jun 06 11:53:10 2014
+
+HSaliency ..\..\DATA\DUTOmron\subset5\*.jpg ..\..\Salmaps\DUTOmron\output_HSal\ 

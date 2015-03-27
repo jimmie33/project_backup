@@ -1,0 +1,3 @@
+Fri Jun 06 14:18:39 2014
+
+HSaliency ..\..\DATA\THUS10000\subset9\*.jpg ..\..\Salmaps\THUS10000\output_HSal\ 

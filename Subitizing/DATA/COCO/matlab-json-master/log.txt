@@ -1,0 +1,36 @@
+make
+gcc: unrecognized option '-bind_at_load'
+fromjson.c: In function ‘array’:
+fromjson.c:85: warning: ‘json_object_object_get’ is deprecated (declared at ../json-c-master/json_object.h:290)
+fromjson.c: In function ‘object’:
+fromjson.c:171: warning: ‘json_object_object_get’ is deprecated (declared at ../json-c-master/json_object.h:290)
+gcc: /home/grad2/jmzhang/local/lib/libopencv_calib3d.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_contrib.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_core.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_features2d.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_flann.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_gpu.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_highgui.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_imgproc.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_legacy.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_ml.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_nonfree.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_objdetect.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_photo.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_stitching.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_ts.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_video.so: linker input file unused because linking not done
+gcc: /home/grad2/jmzhang/local/lib/libopencv_videostab.so: linker input file unused because linking not done
+gcc: unrecognized option '-bind_at_load'
+/usr/bin/ld: cannot find -ljson-c
+collect2: ld returned 1 exit status
+
+    mex: link of ' "fromjson.mexa64"' failed.
+
+{Error using mex (line 206)
+Unable to complete successfully.
+
+Error in make (line 8)
+    mex -ljson-c -g -I../json-c-master fromjson.c
+} 
+diary off

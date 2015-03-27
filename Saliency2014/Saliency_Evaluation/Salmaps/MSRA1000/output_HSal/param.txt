@@ -1,0 +1,3 @@
+Tue Jun 03 13:40:41 2014
+
+HSaliency Y:\jmzhang_work_dir\projects\Saliency2014\Saliency_Evaluation\DATA\MSRA1000\*.jpg Y:\jmzhang_work_dir\projects\Saliency2014\Saliency_Evaluation\Salmaps\MSRA1000\output_HSal\ 

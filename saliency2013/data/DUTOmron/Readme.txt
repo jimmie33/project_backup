@@ -1,0 +1,1 @@
+The last colomn of each "*.mat" file is from 0 to 5, where 0 means that the data in the previous two colomns is  the size of the image, 1~5 indicates the paricipants' serial number and means that the data in the previous two colomns is the eye fixation location from corresponding participant.

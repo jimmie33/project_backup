@@ -1,0 +1,24 @@
+Image Dataset Distribution
+------------------------------
+                            0       1       2       3       4+
+SUN:        2032 (9%)      1567    284     64      20      41
+COCO:       5407 (25%)      1098    2603    664     211     390
+ImgNet:     4565 (21%)       125     596     212     143     49
+VOCTrain:   5011 (23%)      712     2767    769     174     279     
+VOCTest:    4952 (23%)      735     2786    661     194     292
+
+#Images with at least 4/4 consensus labels
+------------------------------
+0:          1631
+1:          3190
+2:          996
+3:          738
+4+:         345
+total:      6900 (31%)
+random:     52%
+
+Worker Statistics
+------------------------------
+#Worker:    259
+Avg. time:  5s/image (std. 2s)
+90% tasks completed by 60 workers 

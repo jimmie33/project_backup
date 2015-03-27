@@ -1,0 +1,48 @@
+=== Run information ===
+
+Scheme:       weka.classifiers.functions.LibLINEAR -S 1 -C 10.0 -E 0.01 -B 1.0 -Z -W "1.0 1.5 5.0 10.0 45.0"
+Relation:     train
+Instances:    2860
+Attributes:   151
+              [list of attributes omitted]
+Test mode:    5-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+LibLINEAR wrapper
+
+Time taken to build model: 6.05 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances        2403               84.021  %
+Incorrectly Classified Instances       457               15.979  %
+Kappa statistic                          0.7402
+Mean absolute error                      0.0639
+Root mean squared error                  0.2528
+Relative absolute error                 25.725  %
+Root relative squared error             71.7511 %
+Coverage of cases (0.95 level)          84.021  %
+Mean rel. region size (0.95 level)      20      %
+Total Number of Instances             2860     
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.976    0.039    0.964      0.976    0.970      0.937    0.968     0.953     0
+                 0.854    0.088    0.817      0.854    0.835      0.757    0.883     0.744     1
+                 0.461    0.045    0.544      0.461    0.499      0.448    0.708     0.307     2
+                 0.331    0.030    0.385      0.331    0.356      0.324    0.651     0.163     3
+                 0.176    0.012    0.146      0.176    0.160      0.150    0.582     0.036     4
+Weighted Avg.    0.840    0.054    0.833      0.840    0.836      0.788    0.893     0.767     
+
+=== Confusion Matrix ===
+
+    a    b    c    d    e   <-- classified as
+ 1438   23    8    4    1 |    a = 0
+   34  772   57   28   13 |    b = 1
+    9  106  137   38    7 |    c = 2
+    9   36   42   50   14 |    d = 3
+    2    8    8   10    6 |    e = 4
+

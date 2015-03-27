@@ -1,0 +1,3 @@
+Tue Jun 03 13:14:44 2014
+
+HSaliency Y:\jmzhang_work_dir\projects\Saliency2014\Saliency_Evaluation\DATA\SED1\*.png Y:\jmzhang_work_dir\projects\Saliency2014\Saliency_Evaluation\Salmaps\SED1\output_HSal\ 

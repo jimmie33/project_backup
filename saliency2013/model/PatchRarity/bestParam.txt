@@ -1,0 +1,356 @@
+AWSpath = '/lab/raid/models/OutputSaliency/SAWS/';
+Houpath = '/lab/raid/models/OutputSaliency/SHouNIPS/';
+fixpath = '/lab/raid/models/AIM/eyetrackingdata/fixdens/Density Maps produced from raw experimental eye tracking data/';
+%
+addpath(genpath('/lab/raid/models/GBVS/'))
+addpath('/lab/borji/borji/projects/Superpixels/codes/simpsal');
+addpath(genpath('/lab/borji/borji/projects/Superpixels/SPAMS/SPAMS/'))
+% % my Saliency
+%
+% % Extracting image patches
+% % Reconstructing the image with Lasso
+% % Use residuals for saliency
+%
+% % Lets apply it first to Bruce and Tsotsos dataset which contain balck and
+% % white image
+%
+% % Phase 1: Generating random patches
+imPath = '/lab/raid/models/AIM/infosaliency/';
+files  = dir([imPath '*.jpg']);
+%
+% DS = cell(1,3);
+%
+% for m =1:3
+%
+%     X = [];
+%     for k=1:length(files)
+%         k
+%         I=double((imread([imPath files(k).name])))/255;
+%         I = RGB2Lab(I);
+%
+%         I = imresize(I(:,:,m), [512 512]);
+%         % extract 8 x 8 patches
+%         Y=im2col(I,[8 8],'distinct');
+%         Y=Y-repmat(mean(Y),[size(Y,1) 1]);
+%         ss = mean(Y.^2) * size(Y,1);
+%         Y=Y ./ repmat(sqrt(ss),[size(Y,1) 1]);
+% %         Y=Y ./ repmat(sum(Y.^2),[size(Y,1) 1]);
+%         X = [X Y];
+%     end
+%     X(find(isnan(X)==1)) = 0;
+%
+%
+%     % I=double(imread('./data/house.png'))/255;
+%
+%     % extract 8 x 8 patches
+%     % X=im2col(I,[8 8],'sliding');
+%     % X=X-repmat(mean(X),[size(X,1) 1]);
+%     % X=X ./ repmat(sqrt(sum(X.^2)),[size(X,1) 1]);
+%
+%
+param.K=200;  % learns a dictionary with 100 elements
+param.lambda=0.15;
+param.numThreads=4; % number of threads
+param.batchsize=400;
+%
+param.iter=2000;  % let us see what happens after 1000 iterations.
+%
+%
+%     %%%%%%%%%% FIRST EXPERIMENT %%%%%%%%%%%
+%     tic
+%     D = mexTrainDL(X,param);
+%     DS{m} = D;
+%     t=toc;
+%     fprintf('time of computation for Dictionary Learning: %f\n',t);
+%
+%     param.approx=0;
+%     fprintf('Evaluating cost function...\n');
+%     alpha=mexLasso(X,D,param);
+%     R=mean(0.5*sum((X-D*alpha).^2)+param.lambda*sum(abs(alpha)));
+%     ImD=displayPatches(D);
+%     subplot(1,3,1);
+%     imagesc(ImD); colormap('gray');
+%     fprintf('objective function: %f\n',R);
+%     drawnow;
+%
+%
+% end % m
+%
+% fprintf('*********** SECOND EXPERIMENT ***********\n');
+%
+%
+%
+% % IMAGE RECONSTRUCTION
+% % loop through images
+%
+%
+
+load('DSBruceLab.mat')
+
+close all
+weights = [1 2 2];
+
+for k=1:length(files)
+    k
+    dims = [256 256];
+    pS =2;
+    ww = dims/8;
+    
+    figure;
+    finalsalMap = zeros(ww);
+    
+    % Looping through the scale space
+    for scaleNo = 1:2%:3%4
+        
+        dims = dims/2;
+        ww = dims/8;
+        overallsalMap = zeros(ww);
+        
+        recImg = zeros(dims(1), dims(2),3);
+        for m=1:3
+            III=double((imread([imPath num2str(k) '.jpg'])))/255;
+            II= RGB2Lab(III);
+            I = imresize(II(:,:,m), [dims(1) dims(2)]);
+            % extract 8 x 8 patches
+            X=im2col(I,[8 8],'distinct');
+            param.approx=0;
+            D = DS{m};
+            alpha=mexLasso(X,D,param);
+            
+            rec = alpha'*D'; % recontructed image
+            
+            %     Y=Y-repmat(mean(Y),[size(Y,1) 1]);
+            %     Y=Y ./ repmat(sqrt(sum(Y.^2)),[size(Y,1) 1]);
+            
+            A = col2im(rec',[8 8],[dims(1) dims(2)], 'distinct');
+            %     A = A + mm;
+            
+            % Calculating saliency for each image
+            % implementing center-surround
+            salMap = zeros(1,size(alpha,2));
+            kk = dims(1)/ww(1);
+            
+            %             zz = reshape(full(alpha), [size(D,2) ww(1) ww(2)]);
+            
+            % Calculating pdf's for each coeff in Alpha
+            LL = full(alpha);
+            RR = zeros(size(LL,1),10);
+            ZZ = zeros(size(LL,1),10);
+            
+            for i=1:size(LL,1)
+                [RR(i,:) ZZ(i,:)] = hist(LL(i,:),10);
+            end
+            
+            %             RR = RR - mean(RR,2) ; RR ./ max(RR,2);
+            %             RR = RR + 1;
+            
+            % Global Rarity
+            salMapG = zeros(1,size(LL,2));
+            
+            for p1=1:size(LL,2)
+                tt = 0;
+                for p2=1:size(LL,1)
+                    [u v ] = min(abs(ZZ(p2,:) - LL(p2,p1)));
+                    %                    LL(p2,p1)
+                    %                    ZZ(p2,:)
+                    %
+                    %                    v
+                    %                    pause
+                    %                    tt = tt + double(log1p(RR(p2,v(1))));
+                    %                    tt = tt + double(log1p(RR(p2,v(1))));
+                    if RR(p2,v(1)) ==0 ; RR(p2,v(1)) =1; end
+                    tt = tt + (RR(p2,v(1)) );
+                end
+                salMapG(p1) = 1-tt;
+            end
+            
+            
+            
+            % Local Rarity -------------------------------------------------
+            %             for p1=1:size(alpha,2)
+            %                     sumA = 0;
+            %                     for p2=1:size(alpha,2)
+            %                             if p1==p2;continue;end
+            %                             we = 1/abs(p1-p2); % change patch number to 2D coordinates
+            %                             xp1 = fix(p1/ww(1));
+            %                             yp1 = p1- xp1*ww(1);
+            %
+            %                             xp2 = fix(p2/ww(1));
+            %                             yp2 = p2- xp2*ww(1);
+            %                             we = 1/abs(pdist2([xp1 yp1], [xp2 yp2])); % change patch number to 2D coordinates
+            %
+            % %                             sumA = sumA + we * mean(abs([zz(:,p1,p2)]' - [zz(:,p1+jx,p2+jy)]'));
+            %                             sumA = sumA + we*pdist2([alpha(:,p1)]' , [alpha(:,p2)]');
+            %                     end
+            %                     salMap(p1) = sumA;
+            %             end  -------------------------------------------------
+            
+            
+            
+            
+            salMapL = zeros(ww);
+            kk = dims(1)/ww(1);
+            
+            zz = reshape(full(alpha), [size(D,2) ww(1) ww(2)]);
+            
+            for p1=1:ww(1)
+                for p2=1:ww(2)
+                    
+                    sumA = 0;
+                    for jx=-pS:+pS
+                        %                     for jx=[-pS 0 +pS]
+                        for jy=-pS:+pS
+                            %                         for jy=[-pS 0 +pS]
+                            if jx==0 && jy==0;continue;end
+                            if p1 + jx < 1;continue;end
+                            if p1 + jx > ww(1);continue;end
+                            if p2 + jy < 1;continue;end
+                            if p2 + jy > ww(2);continue;end
+                            
+                            % dissimilarity measure
+                            %                             sum = sum + pdist2([zz(:,p1,p2)]' , [zz(:,p1+jx,p2+jy)]');
+                            we = 1/norm([jx jy]);
+                            sumA = sumA + we * mean(abs([zz(:,p1,p2)]' - [zz(:,p1+jx,p2+jy)]'));
+                            %              sum = sum + pdist2([alpha(:,p)]' , [alpha(:,p+(kk*jy)+jx)]');
+                        end
+                    end
+                    salMapL(p1,p2) = sumA;
+                end
+            end
+            subplot(3,3,9)
+            imshow(salMapL,[])
+            
+            
+            %             -----------------------------------------
+            salMap = reshape(salMapG, [ww(1) ww(2)]);
+            subplot(3,3,3)
+            imshow(salMap,[])
+            
+            %             salMap = mypeakiness( salMap ) * salMap .* mypeakiness( salMapL ) * salMapL;
+            salMapL= salMapL - min(min(salMapL)); salMapL = salMapL ./max(max(salMapL)); salMapL = mypeakiness( salMapL ) * salMapL;
+            salMap= salMap - min(min(salMap)); salMap = salMap ./max(max(salMap)); salMap = mypeakiness( salMap ) * salMap;
+            salMap = (1+salMap) .*  (1 + salMapL);
+            %                salMap = salMapL;
+            
+            
+            % applying
+            wj = mypeakiness( salMap );
+            overallsalMap = overallsalMap + (weights(m)*wj*salMap);
+            
+            %             overallsalMap = overallsalMap + edgeMap;
+            
+            
+            recImg(:,:,m) = A;
+        end % end m
+        
+        % edge map
+        %               edgeMap = edge(II(:,:,1),'roberts');
+        %               edgeMap = imresize(double(edgeMap) , [size(finalsalMap,1) size(finalsalMap,2)]);
+        %                wk = mypeakiness( edgeMap );
+        
+        %     AWS
+        %              [edgeMap b] = myAWS(imresize(III, [dims(1) dims(2)]));
+        % %              edgeMap = imresize(a, [ww(1) ww(2)]);
+        %               edgeMap = imresize(double(edgeMap) , [size(finalsalMap,1) size(finalsalMap,2)]);
+        %              wk = mypeakiness( edgeMap );
+        
+        
+        wj = mypeakiness( overallsalMap );
+        finalsalMap = finalsalMap + (wj* imresize(overallsalMap,[size(finalsalMap,1) size(finalsalMap,2)] ));% + wk*edgeMap;
+        
+    end % scaleNo
+    
+    
+    % %     AWS
+    %     [a b] = myAWS(imresize(III, .5));
+    %     a = imresize(a, [size(finalsalMap,1) size(finalsalMap,2)]);
+    %     finalsalMap= finalsalMap + (a-min(min(a)))/max(max(a));
+    
+    
+    blurRadius = 0.2;     % e.g. we can change blur radius
+    centerbias = 0; cbSize = 1;
+    % apply final blura
+    if ( blurRadius > 0 )
+        ker = mygausskernel( blurRadius * size(finalsalMap,1) , .1);
+        finalsalMap = myconv2(myconv2(finalsalMap,ker),ker');
+    end
+    
+    % apply global center bias
+    if ( centerbias )
+        h = size(finalsalMap,1);
+        w = size(finalsalMap,2);
+        finalsalMap = finalsalMap .* (gausswin(h,cbSize) * gausswin(w,cbSize)');
+    end
+    
+    
+    
+    subplot(3,3,4)
+    imshow(imresize(III,[dims(1) dims(2)]))
+    
+    subplot(3,3,5)
+    imshow(recImg,[])
+    
+    subplot(3,3,6)
+    
+    
+    
+    % Adding top-down factors --------------------------------------------------------
+    
+    % load Features.mat for Bruce.
+    % load /lab/raid/models/Judd/Softwares/BruceFeatures.mat;
+    %     imshow(reshape(Features{1,1}(:,29),[200 200]), []) % horizon
+    useObjFeat =0;
+    if useObjFeat ==1
+        salMapHorizon = imresize(reshape(Features{1,1}(:,29),[200 200]), [size(finalsalMap,1) size(finalsalMap,2)]);
+        salMapCar = imresize(reshape(Features{1,1}(:,30),[200 200]), [size(finalsalMap,1) size(finalsalMap,2)]); % car
+        salMapPeople = imresize(reshape(Features{1,1}(:,31),[200 200]), [size(finalsalMap,1) size(finalsalMap,2)]); % people
+        salMapFaces = imresize(reshape(Features{1,1}(:,32),[200 200]), [size(finalsalMap,1) size(finalsalMap,2)]); % faces
+        salMapCenter = imresize(reshape(Features{1,1}(:,33),[200 200]), [size(finalsalMap,1) size(finalsalMap,2)]);
+        salMapFeatures = 1-salMapCenter; % salMapHorizon + salMapCar + salMapPeople + salMapFaces;
+        salMapFeatures = salMapFeatures - min(min(salMapFeatures));
+        salMapFeatures = salMapFeatures ./ max(max(salMapFeatures));
+    end
+    
+    
+    
+    %  --------------------------------------------------------
+    
+    
+    finalsalMap = finalsalMap - min(min(finalsalMap)); finalsalMap = finalsalMap ./max(max(finalsalMap));
+    %     finalsalMap = finalsalMap .* salMapFeatures;
+    
+    finalsalMap = imresize(finalsalMap, [size(III,1)  size(III,2)]);
+    
+    
+    
+    imshow(finalsalMap,[])
+    
+    subplot(3,3,7)
+    sss = num2str(k);
+    %     ii = findstr(sss, '.');
+    q = load([AWSpath sss '.mat']);
+    imshow(q.SaliencyMap,[])
+    
+    subplot(3,3,1)
+    sss = num2str(k);
+    q = imread([Houpath sss '.jpg']);
+    imshow(q,[])
+    
+    
+    subplot(3,3,8)
+    sss = num2str(k);
+    III = imread([fixpath 'd' sss '.jpg']);
+    imshow(III,[])
+    
+    
+    
+     close all
+    ff = ['/lab/raid/models/OutputSaliency/SNew/'  sss '.jpg'];
+    imwrite(finalsalMap,ff)
+    
+    
+end
+
+
+
+

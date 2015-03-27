@@ -1,0 +1,3 @@
+Tue Jun 03 11:38:23 2014
+
+HSaliency Y:\jmzhang_work_dir\projects\Saliency2014\Saliency_Evaluation\DATA\ECSSD\*.jpg Y:\jmzhang_work_dir\projects\Saliency2014\Saliency_Evaluation\Salmaps\ECSSD\output_HSal\ 

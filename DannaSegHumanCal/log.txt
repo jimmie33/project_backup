@@ -1,0 +1,42 @@
+=== Run information ===
+
+Scheme:       weka.classifiers.functions.LibSVM -S 0 -K 1 -D 3 -G 0.0 -R 0.0 -N 0.5 -M 40.0 -C 1.0 -E 0.001 -P 0.1 -model "C:\\Program Files\\Weka-3-7" -seed 1
+Relation:     seghumancalc
+Instances:    503
+Attributes:   101
+              [list of attributes omitted]
+Test mode:    5-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+LibSVM wrapper, original code by Yasser EL-Manzalawy (= WLSVM)
+
+Time taken to build model: 0.34 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances         473               94.0358 %
+Incorrectly Classified Instances        30                5.9642 %
+Kappa statistic                          0.8469
+Mean absolute error                      0.0596
+Root mean squared error                  0.2442
+Relative absolute error                 14.7642 %
+Root relative squared error             54.3715 %
+Coverage of cases (0.95 level)          94.0358 %
+Mean rel. region size (0.95 level)      50      %
+Total Number of Instances              503     
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0.981    0.163    0.939      0.981    0.959      0.850    0.909     0.935     0
+                 0.837    0.019    0.944      0.837    0.887      0.850    0.909     0.836     1
+Weighted Avg.    0.940    0.123    0.941      0.940    0.939      0.850    0.909     0.907     
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 355   7 |   a = 0
+  23 118 |   b = 1
+

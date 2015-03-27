@@ -1,0 +1,3 @@
+Fri Jun 06 15:16:07 2014
+
+HSaliency Y:\jmzhang_work_dir\projects\Saliency2014\Saliency_Evaluation\DATA\VOC2008\subset1\*.jpg Y:\jmzhang_work_dir\projects\Saliency2014\Saliency_Evaluation\Salmaps\VOC2008\output_HSal\ 

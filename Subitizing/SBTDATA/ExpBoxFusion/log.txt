@@ -1,0 +1,2 @@
+<= K vs exact K: no benefit
+DDrank vs ThreshSoftNMS: consistent beneficial
